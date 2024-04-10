@@ -24,23 +24,19 @@ void x_task(void *p) {
     adc_init();
     adc_gpio_init(26);
     
-    uint16_t data;
     adc_t str;
-    int x;
     int A[6] = {0};
     while (1) {
         adc_select_input(0);
-        data = adc_read();
 
         A[0]=A[1];
         A[1]=A[2];
         A[2]=A[3];
         A[3]=A[4];
-        A[4]=data;
-        x=(A[0]+A[1]+A[2]+A[3]+A[4])/5;
+        A[4]=adc_read();
 
         str.axis=0;
-        str.val=(x - 2047)/8;
+        str.val=(((A[0]+A[1]+A[2]+A[3]+A[4])/5) - 2047)/8;
         if (abs(str.val)<=30) str.val=0;
         xQueueSend(xQueueAdc, &str, 1);
         vTaskDelay(pdMS_TO_TICKS(100));
@@ -51,23 +47,19 @@ void y_task(void *p) {
     adc_init();
     adc_gpio_init(27);
     
-    uint16_t data;
     adc_t str;
-    int y;
     int A[6] = {0};
     while (1) {
         adc_select_input(1);
-        data = adc_read();
 
         A[0]=A[1];
         A[1]=A[2];
         A[2]=A[3];
         A[3]=A[4];
-        A[4]=data;
-        y=(A[0]+A[1]+A[2]+A[3]+A[4])/5;
+        A[4]=adc_read();;
 
         str.axis=1;
-        str.val=(y - 2047)/8;
+        str.val=(((A[0]+A[1]+A[2]+A[3]+A[4])/5) - 2047)/8;
         if (abs(str.val)<=30) str.val=0;
         xQueueSend(xQueueAdc, &str, 1);
         vTaskDelay(pdMS_TO_TICKS(100));
